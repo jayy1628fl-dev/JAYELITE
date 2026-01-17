@@ -147,15 +147,4 @@
         onValue(ref(db, 'stats/visits'), s => document.getElementById('visitor-data').innerText = `${s.val()} TRAFFIC UNITS`);
     </script>
 </body>
-</html>                set(ref(db, 'orders/' + orderId), {
-                    service: service,
-                    time: new Date().toLocaleString(),
-                    status: 'Pending'
-                });
-                set(ref(db, 'stats/clicks'), increment(1));
-                window.open(`https://wa.link/6x8ws0?text=I paid for ${service}. ID: ${orderId}`);
-            };
-        };
-    </script>
-</body>
 </html>
