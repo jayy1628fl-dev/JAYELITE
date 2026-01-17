@@ -111,28 +111,3 @@
     </script>
 </body>
 </html>
-                    </td>
-                </tr>
-            `).join('');
-        });
-
-        window.updateAnnounce = () => {
-            const txt = document.getElementById('announceText').value;
-            update(ref(db, 'siteData'), { announcement: txt });
-            alert("Banner Updated!");
-        };
-
-        window.updateStatus = (id, val) => {
-            update(ref(db, 'orders/' + id), { status: val });
-        };
-
-        window.saveService = () => {
-            const name = document.getElementById('sName').value;
-            const price = document.getElementById('sPrice').value;
-            if(!currentData.services) currentData.services = [];
-            currentData.services.push({name, price});
-            set(ref(db, 'siteData'), currentData);
-        };
-    </script>
-</body>
-</html>
