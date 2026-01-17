@@ -6,7 +6,7 @@
     <title>JCT HQ // Control</title>
     <style>
         :root { --accent: #FFD700; --bg: #050505; --panel: #111; }
-        body { background: var(--bg); color: #fff; font-family: 'Inter', monospace; padding: 20px; margin: 0; }
+        body { background: var(--bg); color: #fff; font-family: monospace; padding: 20px; margin: 0; }
         #login-wrap { height: 90vh; display: flex; align-items: center; justify-content: center; }
         .box { border: 1px solid #222; padding: 30px; background: #000; width: 100%; max-width: 350px; text-align: center; }
         #hq { display: none; max-width: 1200px; margin: 0 auto; }
@@ -44,7 +44,7 @@
             <div class="stat-box"><h3>Traffic</h3><h1 id="v">0</h1></div>
             <div class="stat-box"><h3>Project Value</h3><h1 id="r">₦0</h1></div>
             <div class="stat-box"><h3>Active Ops</h3><h1 id="a">0</h1></div>
-            <div class="stat-box"><h3>System</h3><h1 style="color:#00ff00; font-size:1rem;">OPTIMAL</h1></div>
+            <div class="stat-box"><h3>System</h3><h1 id="status-text" style="color:#00ff00; font-size:1rem;">READY</h1></div>
         </div>
 
         <div class="main-layout">
@@ -55,10 +55,13 @@
                     <button onclick="upAnn()">Deploy Banner</button>
                 </div>
                 <div class="box" style="max-width:none;">
-                    <p class="section-title">Engineer Service</p>
-                    <input id="sn" placeholder="Title">
-                    <input id="sp" placeholder="Price">
-                    <button onclick="addS()">Publish to Site</button>
+                    <p class="section-title">Gallery Management</p>
+                    <select id="pCat">
+                        <option>Logos</option>
+                        <option>Flyers</option>
+                        <option>Branding</option>
+                    </select>
+                    <input type="file" id="fileInput" accept="image/*" onchange="processUpload(event)">
                 </div>
             </div>
 
@@ -90,7 +93,7 @@
             if(document.getElementById('pass').value === "2026"){ 
                 document.getElementById('login-wrap').style.display='none'; 
                 document.getElementById('hq').style.display='block'; 
-            } else { alert("ACCESS DENIED"); }
+            }
         };
 
         onValue(ref(db), snap => {
@@ -103,39 +106,48 @@
             const keys = Object.keys(orders).reverse();
             document.getElementById('a').innerText = keys.filter(k => orders[k].status !== 'Done').length;
             document.getElementById('order-rows').innerHTML = keys.map(k => `
-                <tr>
-                    <td>${k}</td>
-                    <td>${orders[k].service}</td>
-                    <td>
-                        <select onchange="upStatus('${k}', this.value)" style="padding:5px; font-size:10px; margin:0;">
-                            <option ${orders[k].status==='Pending'?'selected':''}>Pending</option>
-                            <option ${orders[k].status==='Processing'?'selected':''}>Processing</option>
-                            <option ${orders[k].status==='Done'?'selected':''}>Done</option>
-                        </select>
-                    </td>
-                </tr>
+                <tr><td>${k}</td><td>${orders[k].service}</td><td>${orders[k].status}</td></tr>
             `).join('');
         });
 
+        window.processUpload = (e) => {
+            const file = e.target.files[0];
+            const cat = document.getElementById('pCat').value;
+            if(!file) return;
+
+            document.getElementById('status-text').innerText = "UPLOADING...";
+            document.getElementById('status-text').style.color = "yellow";
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const maxW = 800;
+                    const scale = maxW / img.width;
+                    canvas.width = maxW;
+                    canvas.height = img.height * scale;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    const compressed = canvas.toDataURL('image/jpeg', 0.7);
+                    if(!siteData.portfolio) siteData.portfolio = [];
+                    siteData.portfolio.push({ url: compressed, category: cat });
+                    
+                    set(ref(db, 'siteData'), siteData).then(() => {
+                        document.getElementById('status-text').innerText = "OPTIMAL";
+                        document.getElementById('status-text').style.color = "#00ff00";
+                        alert("IMAGE UPLOADED");
+                    });
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
         window.upAnn = () => {
-            const txt = document.getElementById('ann').value;
-            update(ref(db, 'siteData'), { announcement: txt }).then(() => alert("DEPLOYED"));
+            update(ref(db, 'siteData'), { announcement: document.getElementById('ann').value });
         };
-
-        window.addS = () => {
-            const name = document.getElementById('sn').value;
-            const price = document.getElementById('sp').value;
-            if(!siteData.services) siteData.services = [];
-            siteData.services.push({name, price});
-            set(ref(db, 'siteData'), siteData).then(() => {
-                alert("PUBLISHED");
-                document.getElementById('sn').value = "";
-                document.getElementById('sp').value = "";
-            });
-        };
-
-        window.upStatus = (id, val) => update(ref(db, 'orders/'+id), {status: val});
     </script>
 </body>
 </html>
-
