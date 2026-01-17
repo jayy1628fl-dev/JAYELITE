@@ -6,59 +6,65 @@
     <title>JCT HQ // Control</title>
     <style>
         :root { --accent: #FFD700; --bg: #050505; --panel: #111; }
-        body { background: var(--bg); color: #fff; font-family: monospace; padding: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: #222; border: 2px solid #222; margin-bottom: 40px; }
-        .stat-box { background: var(--bg); padding: 30px; }
-        .stat-box h3 { font-size: 10px; color: #666; letter-spacing: 2px; text-transform: uppercase; }
-        .stat-box h1 { font-size: 2rem; margin-top: 10px; color: var(--accent); }
-        .main-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; }
-        .box { border: 1px solid #222; padding: 30px; margin-bottom: 30px; }
-        input, select { width: 100%; background: #000; border: 1px solid #333; padding: 15px; color: #fff; margin: 10px 0; font-family: monospace; }
-        button { width: 100%; background: #fff; color: #000; border: none; padding: 15px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', monospace; padding: 20px; margin: 0; }
+        #login-wrap { height: 90vh; display: flex; align-items: center; justify-content: center; }
+        .box { border: 1px solid #222; padding: 30px; background: #000; width: 100%; max-width: 350px; text-align: center; }
+        #hq { display: none; max-width: 1200px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2px; background: #222; border: 2px solid #222; margin: 30px 0; }
+        .stat-box { background: var(--bg); padding: 25px; }
+        .stat-box h3 { font-size: 10px; color: #666; letter-spacing: 2px; text-transform: uppercase; margin: 0; }
+        .stat-box h1 { font-size: 1.8rem; margin: 10px 0 0 0; color: var(--accent); }
+        .main-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        input, select { width: 100%; background: #000; border: 1px solid #333; padding: 15px; color: #fff; margin: 10px 0; font-family: monospace; box-sizing: border-box; }
+        button { width: 100%; background: #fff; color: #000; border: none; padding: 15px; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
         button:hover { background: var(--accent); }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 15px; }
         th { text-align: left; color: #666; padding: 10px; border-bottom: 1px solid #222; }
         td { padding: 15px 10px; border-bottom: 1px solid #111; }
-        #login-wrap { height: 80vh; display: flex; align-items: center; justify-content: center; }
+        .section-title { font-size: 10px; letter-spacing: 3px; color: var(--accent); text-transform: uppercase; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
     <div id="login-wrap">
-        <div class="box" style="width:300px; text-align:center;">
-            <h3>ENCRYPTED ACCESS</h3>
+        <div class="box">
+            <p class="section-title">Encrypted Access</p>
             <input type="password" id="pass" placeholder="KEY CODE">
-            <button onclick="unlock()">ACCESS HQ</button>
+            <button onclick="unlock()">Access HQ</button>
         </div>
     </div>
 
-    <div id="hq" style="display:none;">
-        <h2 style="margin-bottom:30px; letter-spacing:5px;">JCT // HQ COMMAND</h2>
+    <div id="hq">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 style="letter-spacing:5px; font-size:1.2rem;">JCT // HQ</h2>
+            <button onclick="location.reload()" style="width:auto; padding:8px 15px; background:#222; color:#fff; font-size:10px;">Logout</button>
+        </div>
         
         <div class="grid">
-            <div class="stat-box"><h3>Network Traffic</h3><h1 id="v">0</h1></div>
+            <div class="stat-box"><h3>Traffic</h3><h1 id="v">0</h1></div>
             <div class="stat-box"><h3>Project Value</h3><h1 id="r">₦0</h1></div>
             <div class="stat-box"><h3>Active Ops</h3><h1 id="a">0</h1></div>
-            <div class="stat-box"><h3>System Status</h3><h1>STABLE</h1></div>
+            <div class="stat-box"><h3>System</h3><h1 style="color:#00ff00; font-size:1rem;">OPTIMAL</h1></div>
         </div>
 
         <div class="main-layout">
-            <div>
-                <div class="box">
-                    <h3>BROADCAST MESSAGE</h3>
+            <div class="controls">
+                <div class="box" style="max-width:none; margin-bottom:20px;">
+                    <p class="section-title">Broadcast Message</p>
                     <input id="ann" placeholder="Banner text...">
-                    <button onclick="upAnn()">DEEPLOY</button>
+                    <button onclick="upAnn()">Deploy Banner</button>
                 </div>
-                <div class="box">
-                    <h3>ENGINEER SERVICE</h3>
+                <div class="box" style="max-width:none;">
+                    <p class="section-title">Engineer Service</p>
                     <input id="sn" placeholder="Title">
                     <input id="sp" placeholder="Price">
-                    <button onclick="addS()">PUBLISH</button>
+                    <button onclick="addS()">Publish to Site</button>
                 </div>
             </div>
-            <div class="box">
-                <h3>MISSION LOG (ORDERS)</h3>
-                <table id="logs">
+
+            <div class="box" style="max-width:none;">
+                <p class="section-title">Mission Log (Orders)</p>
+                <table>
                     <thead><tr><th>ID</th><th>SERVICE</th><th>STATUS</th></tr></thead>
                     <tbody id="order-rows"></tbody>
                 </table>
@@ -80,7 +86,12 @@
         const db = getDatabase(app);
         let siteData = {services:[], portfolio:[]};
 
-        window.unlock = () => { if(document.getElementById('pass').value==="2026"){ document.getElementById('login-wrap').style.display='none'; document.getElementById('hq').style.display='block'; } };
+        window.unlock = () => { 
+            if(document.getElementById('pass').value === "2026"){ 
+                document.getElementById('login-wrap').style.display='none'; 
+                document.getElementById('hq').style.display='block'; 
+            } else { alert("ACCESS DENIED"); }
+        };
 
         onValue(ref(db), snap => {
             const d = snap.val() || {};
@@ -92,22 +103,39 @@
             const keys = Object.keys(orders).reverse();
             document.getElementById('a').innerText = keys.filter(k => orders[k].status !== 'Done').length;
             document.getElementById('order-rows').innerHTML = keys.map(k => `
-                <tr><td>${k}</td><td>${orders[k].service}</td><td>
-                    <select onchange="upStatus('${k}', this.value)" style="padding:5px; font-size:10px;">
-                        <option ${orders[k].status==='Pending'?'selected':''}>Pending</option>
-                        <option ${orders[k].status==='Processing'?'selected':''}>Processing</option>
-                        <option ${orders[k].status==='Done'?'selected':''}>Done</option>
-                    </select>
-                </td></tr>
+                <tr>
+                    <td>${k}</td>
+                    <td>${orders[k].service}</td>
+                    <td>
+                        <select onchange="upStatus('${k}', this.value)" style="padding:5px; font-size:10px; margin:0;">
+                            <option ${orders[k].status==='Pending'?'selected':''}>Pending</option>
+                            <option ${orders[k].status==='Processing'?'selected':''}>Processing</option>
+                            <option ${orders[k].status==='Done'?'selected':''}>Done</option>
+                        </select>
+                    </td>
+                </tr>
             `).join('');
         });
 
-        window.upAnn = () => update(ref(db, 'siteData'), { announcement: document.getElementById('ann').value });
-        window.addS = () => {
-            siteData.services.push({name: document.getElementById('sn').value, price: document.getElementById('sp').value});
-            set(ref(db, 'siteData'), siteData);
+        window.upAnn = () => {
+            const txt = document.getElementById('ann').value;
+            update(ref(db, 'siteData'), { announcement: txt }).then(() => alert("DEPLOYED"));
         };
+
+        window.addS = () => {
+            const name = document.getElementById('sn').value;
+            const price = document.getElementById('sp').value;
+            if(!siteData.services) siteData.services = [];
+            siteData.services.push({name, price});
+            set(ref(db, 'siteData'), siteData).then(() => {
+                alert("PUBLISHED");
+                document.getElementById('sn').value = "";
+                document.getElementById('sp').value = "";
+            });
+        };
+
         window.upStatus = (id, val) => update(ref(db, 'orders/'+id), {status: val});
     </script>
 </body>
 </html>
+
