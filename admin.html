@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JCT Admin</title>
+    <style>
+        body { background: #020617; color: white; font-family: sans-serif; padding: 20px; }
+        .box { background: #0a0f1d; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; }
+        button { width: 100%; padding: 15px; background: #FFD700; border: none; font-weight: bold; cursor: pointer; }
+        .list-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #222; }
+    </style>
+</head>
+<body>
+    <h1>JCT COMMAND</h1>
+    
+    <div class="box">
+        <h3>Add Service</h3>
+        <input type="text" id="sName" placeholder="Service Name">
+        <input type="text" id="sPrice" placeholder="Price (e.g. 15,000)">
+        <button onclick="saveService()">Publish Service</button>
+    </div>
+
+    <div class="box">
+        <h3>Upload Portfolio</h3>
+        <input type="file" id="pImg" accept="image/*" onchange="uploadWork(event)">
+    </div>
+
+    <div class="box" id="current-list">
+        <h3>Live Content</h3>
+        <div id="services-list"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-3znjf5oxH2irY8zxt0c5JrjWVn7Rkf0",
+            authDomain: "jayct-b6e54.firebaseapp.com",
+            databaseURL: "https://jayct-b6e54-default-rtdb.firebaseio.com/",
+            projectId: "jayct-b6e54",
+            appId: "1:570915018020:web:bcc362b9cea1359ba94fb1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        let currentData = { services: [], portfolio: [] };
+
+        onValue(ref(db, 'siteData'), (snap) => {
+            if(snap.val()) {
+                currentData = snap.val();
+                renderAdmin();
+            }
+        });
+
+        window.saveService = function() {
+            const name = document.getElementById('sName').value;
+            const price = document.getElementById('sPrice').value;
+            if(name && price) {
+                if(!currentData.services) currentData.services = [];
+                currentData.services.push({ name, price });
+                set(ref(db, 'siteData'), currentData).then(() => alert("Added!"));
+            }
+        };
+
+        window.uploadWork = function(e) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                if(!currentData.portfolio) currentData.portfolio = [];
+                currentData.portfolio.push(event.target.result);
+                set(ref(db, 'siteData'), currentData).then(() => alert("Uploaded!"));
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        };
+
+        function renderAdmin() {
+            const list = document.getElementById('services-list');
+            list.innerHTML = (currentData.services || []).map((s, i) => `
+                <div class="list-item">
+                    <span>${s.name} - ₦${s.price}</span>
+                    <span style="color:red" onclick="deleteService(${i})">Delete</span>
+                </div>
+            `).join('');
+        }
+
+        window.deleteService = function(i) {
+            currentData.services.splice(i, 1);
+            set(ref(db, 'siteData'), currentData);
+        };
+    </script>
+</body>
+</html>
