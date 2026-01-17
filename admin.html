@@ -3,33 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JCT Admin</title>
+    <title>JCT Admin | Secure Command</title>
     <style>
-        body { background: #020617; color: white; font-family: sans-serif; padding: 20px; }
-        .box { background: #0a0f1d; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; }
-        button { width: 100%; padding: 15px; background: #FFD700; border: none; font-weight: bold; cursor: pointer; }
-        .list-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #222; }
+        :root { --accent: #FFD700; --bg: #020617; --card: #0a0f1d; }
+        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; padding: 20px; }
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90vh; }
+        .login-box { background: var(--card); padding: 40px; border: 1px solid var(--accent); text-align: center; border-radius: 8px; width: 100%; max-width: 400px; }
+        #admin-content { display: none; max-width: 800px; margin: 0 auto; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: var(--accent); border: none; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 10px; }
+        .box { background: var(--card); padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1); }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #222; }
+        .portfolio-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 15px; }
+        .port-item { position: relative; border: 1px solid #333; border-radius: 4px; overflow: hidden; }
+        .port-item img { width: 100%; height: 100px; object-fit: cover; }
+        .del-btn { background: #ff4444; color: white; font-size: 10px; padding: 4px; cursor: pointer; text-align: center; width: 100%; }
     </style>
 </head>
 <body>
-    <h1>JCT COMMAND</h1>
-    
-    <div class="box">
-        <h3>Add Service</h3>
-        <input type="text" id="sName" placeholder="Service Name">
-        <input type="text" id="sPrice" placeholder="Price (e.g. 15,000)">
-        <button onclick="saveService()">Publish Service</button>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h2 style="color:var(--accent)">JCT SECURE</h2>
+            <input type="password" id="passInput" placeholder="Enter Access Code">
+            <button onclick="checkPass()">Unlock Panel</button>
+        </div>
     </div>
 
-    <div class="box">
-        <h3>Upload Portfolio</h3>
-        <input type="file" id="pImg" accept="image/*" onchange="uploadWork(event)">
-    </div>
+    <div id="admin-content">
+        <h1>COMMAND CENTER</h1>
+        
+        <div class="box">
+            <h3>Add New Service</h3>
+            <input type="text" id="sName" placeholder="Service Name (e.g. Logo Design)">
+            <input type="text" id="sPrice" placeholder="Price (e.g. 15,000)">
+            <button onclick="saveService()">Publish Service</button>
+            <div id="services-list" style="margin-top: 20px;"></div>
+        </div>
 
-    <div class="box" id="current-list">
-        <h3>Live Content</h3>
-        <div id="services-list"></div>
+        <div class="box">
+            <h3>Upload Portfolio Work</h3>
+            <input type="file" id="pImg" accept="image/*" onchange="uploadWork(event)">
+            <p style="font-size: 12px; opacity: 0.6; margin-top: 10px;">Current Gallery:</p>
+            <div id="portfolio-list" class="portfolio-preview"></div>
+        </div>
     </div>
 
     <script type="module">
@@ -48,9 +65,19 @@
         const db = getDatabase(app);
         let currentData = { services: [], portfolio: [] };
 
+        window.checkPass = function() {
+            if(document.getElementById('passInput').value === "2026") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-content').style.display = 'block';
+            } else { alert("Wrong Code"); }
+        }
+
         onValue(ref(db, 'siteData'), (snap) => {
-            if(snap.val()) {
-                currentData = snap.val();
+            const val = snap.val();
+            if(val) {
+                currentData = val;
+                if(!currentData.services) currentData.services = [];
+                if(!currentData.portfolio) currentData.portfolio = [];
                 renderAdmin();
             }
         });
@@ -59,36 +86,52 @@
             const name = document.getElementById('sName').value;
             const price = document.getElementById('sPrice').value;
             if(name && price) {
-                if(!currentData.services) currentData.services = [];
                 currentData.services.push({ name, price });
-                set(ref(db, 'siteData'), currentData).then(() => alert("Added!"));
+                set(ref(db, 'siteData'), currentData).then(() => {
+                    document.getElementById('sName').value = "";
+                    document.getElementById('sPrice').value = "";
+                });
             }
         };
 
         window.uploadWork = function(e) {
             const reader = new FileReader();
             reader.onload = (event) => {
-                if(!currentData.portfolio) currentData.portfolio = [];
                 currentData.portfolio.push(event.target.result);
-                set(ref(db, 'siteData'), currentData).then(() => alert("Uploaded!"));
+                set(ref(db, 'siteData'), currentData);
             };
             reader.readAsDataURL(e.target.files[0]);
         };
 
-        function renderAdmin() {
-            const list = document.getElementById('services-list');
-            list.innerHTML = (currentData.services || []).map((s, i) => `
-                <div class="list-item">
-                    <span>${s.name} - ₦${s.price}</span>
-                    <span style="color:red" onclick="deleteService(${i})">Delete</span>
-                </div>
-            `).join('');
-        }
-
-        window.deleteService = function(i) {
+        window.deleteService = (i) => {
             currentData.services.splice(i, 1);
             set(ref(db, 'siteData'), currentData);
         };
+
+        window.deletePortfolio = (i) => {
+            if(confirm("Remove this image?")) {
+                currentData.portfolio.splice(i, 1);
+                set(ref(db, 'siteData'), currentData);
+            }
+        };
+
+        function renderAdmin() {
+            const sList = document.getElementById('services-list');
+            sList.innerHTML = currentData.services.map((s, i) => `
+                <div class="list-item">
+                    <span>${s.name} (₦${s.price})</span>
+                    <button onclick="deleteService(${i})" style="width:auto; padding:5px 10px; background:#ff4444; margin:0;">Delete</button>
+                </div>
+            `).join('');
+
+            const pList = document.getElementById('portfolio-list');
+            pList.innerHTML = currentData.portfolio.map((img, i) => `
+                <div class="port-item">
+                    <img src="${img}">
+                    <div class="del-btn" onclick="deletePortfolio(${i})">REMOVE</div>
+                </div>
+            `).join('');
+        }
     </script>
 </body>
 </html>
