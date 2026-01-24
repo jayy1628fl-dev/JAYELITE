@@ -3,126 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JCT ELITE | High-Tension Graphics & Branding</title>
+    <title>JCT ELITE | Visionary Design Authority</title>
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --primary: #020617; 
+            --primary: #000000; 
             --accent: #FFD700; 
-            --accent-dim: rgba(255, 215, 0, 0.1);
-            --border: rgba(255, 255, 255, 0.1); 
-            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            --gold-glow: 0 0 40px rgba(255, 215, 0, 0.2);
+            --border: rgba(255, 255, 255, 0.05);
+            --transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        body { background: var(--primary); color: #f8fafc; font-family: 'Space Grotesk', sans-serif; overflow-x: hidden; }
         
-        /* Ambient Background */
-        body::before {
-            content: ''; position: fixed; top: -10%; left: -10%; width: 40%; height: 40%;
-            background: radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%);
-            z-index: -1; pointer-events: none;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        body { background: var(--primary); color: #fff; font-family: 'Space Grotesk', sans-serif; overflow-x: hidden; }
 
-        header { padding: 15px 0; position: fixed; width: 100%; top: 0; z-index: 1000; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
-        .container { width: 92%; max-width: 1300px; margin: 0 auto; }
-        nav { display: flex; justify-content: space-between; align-items: center; }
-        
-        .logo { font-family: 'Syncopate', sans-serif; font-size: 1.2rem; letter-spacing: 4px; text-decoration: none; color: #fff; }
+        /* Custom Cursor */
+        #cursor { width: 15px; height: 15px; background: var(--accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 10000; transition: transform 0.1s; mix-blend-mode: difference; }
+
+        /* Background Architecture */
+        .noise { fixed: inset 0; width: 100%; height: 100%; opacity: 0.03; z-index: 1; pointer-events: none; background: url('https://grainy-gradients.vercel.app/noise.svg'); }
+        .grid-layers { position: fixed; inset: 0; background: linear-gradient(to right, var(--border) 1px, transparent 1px), linear-gradient(to bottom, var(--border) 1px, transparent 1px); background-size: 80px 80px; z-index: 0; }
+
+        .container { width: 92%; max-width: 1700px; margin: 0 auto; position: relative; z-index: 2; }
+
+        /* Header Navigation */
+        header { padding: 40px 0; position: fixed; width: 100%; top: 0; z-index: 1000; transition: var(--transition); }
+        header.scrolled { background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); padding: 20px 0; }
+        .nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Syncopate'; font-size: 1.8rem; letter-spacing: 10px; font-weight: 900; color: #fff; text-decoration: none; }
         .logo span { color: var(--accent); }
 
-        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; position: relative; }
-        .hero-title { font-size: clamp(3rem, 12vw, 8.5rem); font-weight: 700; line-height: 0.8; letter-spacing: -4px; margin-bottom: 20px; }
-        .hero-title em { font-style: normal; -webkit-text-stroke: 1px var(--accent); color: transparent; }
-        
-        .badge { display: inline-block; padding: 6px 12px; border: 1px solid var(--accent); color: var(--accent); font-size: 0.7rem; font-family: 'Syncopate'; margin-bottom: 20px; border-radius: 50px; }
+        /* Hero Section */
+        .hero { height: 100vh; display: flex; align-items: center; }
+        .hero-title { font-size: clamp(4rem, 18vw, 15rem); line-height: 0.75; font-weight: 700; letter-spacing: -10px; }
+        .hero-title span { -webkit-text-stroke: 2px var(--accent); color: transparent; opacity: 0.5; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
-        
-        .card { 
-            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
-            padding: 40px; border: 1px solid var(--border); transition: var(--transition); border-radius: 12px;
-            position: relative; overflow: hidden;
-        }
-        .card::after { content: ''; position: absolute; top: 0; right: 0; width: 40px; height: 40px; background: var(--accent-dim); clip-path: polygon(100% 0, 0 0, 100% 100%); }
-        .card:hover { border-color: var(--accent); transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        .card h3 { font-family: 'Syncopate'; font-size: 0.9rem; color: var(--accent); letter-spacing: 1px; }
-        .card .price { font-size: 2.2rem; font-weight: 700; margin: 20px 0; }
-        
-        .btn-main { 
-            background: var(--accent); color: #000; padding: 18px 35px; font-weight: 800; border: none; 
-            cursor: pointer; text-transform: uppercase; text-decoration: none; display: inline-flex; 
-            align-items: center; justify-content: center; gap: 10px; transition: var(--transition);
-        }
-        .btn-main:hover { letter-spacing: 1px; filter: brightness(1.1); }
+        /* Dynamic Service Display */
+        .section-title { font-family: 'Syncopate'; font-size: 0.8rem; color: var(--accent); letter-spacing: 10px; margin-bottom: 50px; display: block; }
+        .service-list { border-top: 1px solid var(--border); }
+        .service-row { display: flex; justify-content: space-between; align-items: center; padding: 60px 0; border-bottom: 1px solid var(--border); transition: var(--transition); }
+        .service-row:hover { background: rgba(255,215,0,0.02); padding-left: 30px; }
+        .service-row h2 { font-family: 'Syncopate'; font-size: clamp(1.5rem, 4vw, 3rem); }
+        .service-row .price-tag { font-size: 2.5rem; font-weight: 700; color: var(--accent); }
 
-        .port-img { 
-            width: 100%; height: 400px; object-fit: cover; border-radius: 8px; 
-            border: 1px solid var(--border); transition: var(--transition); filter: grayscale(0.5);
-        }
-        .port-img:hover { filter: grayscale(0); border-color: var(--accent); transform: scale(1.02); }
+        /* Portfolio */
+        .portfolio-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; padding: 100px 0; }
+        .port-box { grid-column: span 4; height: 600px; overflow: hidden; position: relative; border: 1px solid var(--border); }
+        .port-box:nth-child(2) { grid-column: span 8; }
+        .port-box img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0); transition: var(--transition); }
+        .port-box:hover img { filter: saturate(1); transform: scale(1.05); }
 
-        /* Modal Enhancements */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .modal-card { background: #050a18; border: 1px solid var(--accent); padding: 40px; text-align: center; max-width: 450px; width: 90%; border-radius: 15px; }
-        
-        .copy-box { 
-            background: #000; padding: 25px; border: 1px dashed var(--accent); margin: 20px 0; 
-            cursor: pointer; position: relative; transition: 0.3s;
-        }
-        .copy-box:active { transform: scale(0.95); }
-        .copy-box::before { content: 'CLICK TO COPY'; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #000; font-size: 10px; padding: 2px 8px; font-weight: bold; }
+        /* High-End Payment Modal */
+        #billingModal { display: none; position: fixed; inset: 0; background: #000; z-index: 10000; align-items: center; justify-content: center; }
+        .invoice-card { width: 500px; background: #050505; border: 1px solid var(--accent); padding: 60px; text-align: left; }
+        .invoice-id { font-family: 'Syncopate'; font-size: 0.6rem; opacity: 0.4; }
 
-        footer { padding: 80px 0; text-align: center; border-top: 1px solid var(--border); opacity: 0.6; font-size: 0.9rem; }
+        .btn-cta { background: var(--accent); color: #000; padding: 25px 50px; font-weight: 900; border: none; letter-spacing: 5px; text-transform: uppercase; transition: var(--transition); }
+        .btn-cta:hover { background: #fff; transform: scale(1.05); }
+
+        footer { padding: 150px 0; text-align: center; background: #000; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body>
+    <div id="cursor"></div>
+    <div class="grid-layers"></div>
+    <div class="noise"></div>
 
-    <header>
+    <header id="navbar">
         <div class="container nav">
             <a href="#" class="logo">JCT // <span>ELITE</span></a>
-            <a href="https://wa.link/e08n4f" class="btn-main" style="padding: 8px 20px; font-size: 0.7rem;">TALK TO US</a>
+            <a href="https://wa.link/e08n4f" class="btn-cta" style="padding: 12px 25px; font-size: 0.6rem;">START PROJECT</a>
         </div>
     </header>
 
-    <section class="hero container">
-        <span class="badge">EST 2026</span>
-        <h1 class="hero-title">WE BUILD<br>THE <em>EMPIRES.</em></h1>
-        <p style="margin-bottom: 40px; opacity: 0.6; max-width: 500px; line-height: 1.6;">High-tension visual identities and strategic branding for those who refuse to be ignored.</p>
-        <div>
-            <button class="btn-main" onclick="location.href='#services'">VIEW SERVICES</button>
-        </div>
-    </section>
+    <div class="container">
+        <section class="hero">
+            <h1 class="hero-title">WE DESIGN<br><span>LEGACIES.</span></h1>
+        </section>
 
-    <section class="container" id="services" style="padding: 100px 0;">
-        <h2 style="font-family: 'Syncopate'; margin-bottom: 40px;">SELECTED <span style="color:var(--accent)">SERVICES</span></h2>
-        <div class="grid" id="service-display">Loading services...</div>
-    </section>
+        <section id="services" style="padding: 100px 0;">
+            <span class="section-title">COMMAND THE MARKET</span>
+            <div class="service-list" id="service-target">
+                </div>
+        </section>
 
-    <section class="container" id="portfolio" style="padding: 100px 0;">
-        <h2 style="font-family: 'Syncopate'; margin-bottom: 40px;">VISUAL <span style="color:var(--accent)">ARCHIVE</span></h2>
-        <div class="grid" id="portfolio-display" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
-            Loading archive...
-        </div>
-    </section>
+        <section id="portfolio">
+            <span class="section-title">THE ARCHIVE</span>
+            <div class="portfolio-grid" id="portfolio-target">
+                </div>
+        </section>
+    </div>
 
-    <div id="payModal" class="modal">
-        <div class="modal-card">
-            <h2 style="font-family: 'Syncopate'; color:var(--accent); margin-bottom: 10px;">SECURE PAYMENT</h2>
-            <p style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 25px;">Transfer the exact amount to the account below</p>
+    <div id="billingModal">
+        <div class="invoice-card">
+            <p class="invoice-id" id="inv-id">INV-2026-X</p>
+            <h2 id="inv-title" style="font-family:'Syncopate'; font-size: 2rem; margin: 20px 0;">LOGO MASTERCLASS</h2>
+            <div style="height: 1px; background: var(--border); margin: 30px 0;"></div>
+            <p style="opacity:0.5;">Amount Due:</p>
+            <h1 id="inv-price" style="font-size: 3rem; color: var(--accent);">₦25,000</h1>
             
-            <div class="copy-box" onclick="copyAccount('9156489166')">
-                <p style="font-size: 0.7rem; opacity: 0.5; margin-bottom: 10px;">OPAY / DIGITAL BANK</p>
-                <h2 style="letter-spacing: 4px; font-size: 2rem;" id="accNum">9156489166</h2>
-                <p style="color:var(--accent); font-weight: bold; margin-top: 5px;">JAY CREATIVE TECH</p>
+            <div style="background:#111; padding: 30px; margin: 30px 0; border: 1px solid #222;">
+                <p style="font-size: 0.7rem; color: var(--accent);">OPAY ACCOUNT</p>
+                <h2 style="letter-spacing: 5px;">9156489166</h2>
+                <p>JAY CREATIVE TECH</p>
             </div>
-
-            <button class="btn-main" id="confirmBtn" style="width: 100%;">I HAVE MADE PAYMENT</button>
-            <p onclick="closePay()" style="margin-top: 20px; cursor: pointer; opacity: 0.4; font-size: 0.8rem;">CANCEL TRANSACTION</p>
+            
+            <button class="btn-cta" id="payFinal" style="width: 100%;">CONFIRM DEPOSIT</button>
+            <p onclick="document.getElementById('billingModal').style.display='none'" style="margin-top: 20px; text-align: center; opacity: 0.3;">CANCEL</p>
         </div>
     </div>
 
     <footer>
-        <p>© 2026 JCT ELITE // ALL RIGHTS RESERVED</p>
+        <h1 style="font-family:'Syncopate'; opacity: 0.05; font-size: 10vw;">JCT ELITE</h1>
     </footer>
 
     <script type="module">
@@ -140,34 +132,41 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        onValue(ref(db, 'siteData'), (snapshot) => {
-            const data = snapshot.val() || { services: [], portfolio: [] };
-            
-            const sDisplay = document.getElementById('service-display');
-            sDisplay.innerHTML = (data.services || []).map(s => `
-                <div class="card">
-                    <h3>${s.name.toUpperCase()}</h3>
-                    <div class="price">₦${s.price}</div>
-                    <button class="btn-main" style="width:100%; border: 1px solid #000;" onclick="openPay('${s.name}', '${s.price}')">GET STARTED</button>
-                </div>`).join('') || "<p>Consultation only at this time.</p>";
-
-            const pDisplay = document.getElementById('portfolio-display');
-            pDisplay.innerHTML = (data.portfolio || []).map(img => `<img src="${img}" class="port-img" loading="lazy">`).join('') || "<p>Archive empty.</p>";
+        // Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', e => {
+            cursor.style.top = e.clientY + 'px';
+            cursor.style.left = e.clientX + 'px';
         });
 
-        window.openPay = function(name, price) {
-            document.getElementById('payModal').style.display = 'flex';
-            document.getElementById('confirmBtn').onclick = () => {
-                window.open(`https://wa.link/6x8ws0?text=Hello, I just paid ₦${price} for the ${name} package. My receipt is attached.`);
-            };
-        }
+        // Scroll Logic
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
 
-        window.copyAccount = function(num) {
-            navigator.clipboard.writeText(num);
-            alert("Account Number Copied!");
-        }
+        onValue(ref(db, 'siteData'), (snap) => {
+            const data = snap.val() || { services: [], portfolio: [] };
+            
+            document.getElementById('service-target').innerHTML = (data.services || []).map(s => `
+                <div class="service-row">
+                    <h2>${s.name.toUpperCase()}</h2>
+                    <div style="text-align: right">
+                        <div class="price-tag">₦${s.price}</div>
+                        <button onclick="openInvoice('${s.name}', '${s.price}')" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:bold; letter-spacing:2px;">[ INITIATE ]</button>
+                    </div>
+                </div>`).join('');
 
-        window.closePay = function() { document.getElementById('payModal').style.display = 'none'; }
+            document.getElementById('portfolio-target').innerHTML = (data.portfolio || []).map(img => `
+                <div class="port-box"><img src="${img}"></div>`).join('');
+        });
+
+        window.openInvoice = (name, price) => {
+            document.getElementById('inv-id').innerText = `TX-${Math.floor(Math.random()*1000000)}`;
+            document.getElementById('inv-title').innerText = name;
+            document.getElementById('inv-price').innerText = `₦${price}`;
+            document.getElementById('billingModal').style.display = 'flex';
+            document.getElementById('payFinal').onclick = () => window.open(`https://wa.link/6x8ws0?text=I'm paying for ${name}.`);
+        };
     </script>
 </body>
 </html>
